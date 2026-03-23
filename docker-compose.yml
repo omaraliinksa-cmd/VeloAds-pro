@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  # قاعدة البيانات (الذاكرة)
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: veloads
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  # المخزن المؤقت (الوسيط)
+  redis:
+    image: redis:7-alpine
+
+  # المحرك الرئيسي (API)
+  backend:
+    build: ./app
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000
+    volumes:
+      - ./app:/code/app
+    depends_on:
+      - db
+      - redis
+    env_file:
+      - .env
+
+  # العامل الكادح (هو اللي بيصنع الفيديو في الخلفية)
+  worker:
+    build: ./app
+    command: celery -A app.tasks.celery worker --loglevel=info
+    depends_on:
+      - db
+      - redis
+    env_file:
+      - .env
+
+  # الواجهة الأمامية (الجمال)
+  frontend:
+    build: ./web
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
