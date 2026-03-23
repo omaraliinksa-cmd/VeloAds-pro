@@ -2,7 +2,7 @@ import os
 import json
 import google.generativeai as genai
 from celery import Celery
-from app.database import SessionLocal
+from database import SessionLocal
 from app.models import Video
 
 # ربط مفتاح جمناي اللي حطيته في الـ .env
