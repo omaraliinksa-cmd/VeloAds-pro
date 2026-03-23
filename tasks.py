@@ -3,7 +3,7 @@ import json
 import google.generativeai as genai
 from celery import Celery
 from database import SessionLocal
-from app.models import Video
+from models import Video
 
 # ربط مفتاح جمناي اللي حطيته في الـ .env
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
