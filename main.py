@@ -2,7 +2,7 @@ from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.database import SessionLocal, engine, get_db
 from app.models import Base, Video
-from app.tasks import create_elite_video_task
+from tasks import create_elite_video_task
 from pydantic import BaseModel
 
 # إنشاء الجداول في قاعدة البيانات تلقائياً
